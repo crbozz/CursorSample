@@ -1,0 +1,51 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 27
+    defaultConfig {
+        applicationId "org.sidia.cursortest"
+        minSdkVersion 24
+        targetSdkVersion 27
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    // ignore the arm-v8 bullet library file
+    packagingOptions {
+        exclude 'lib/arm64-v8a/libBullet.so'
+        pickFirst 'lib/*/libc++_shared.so'
+        pickFirst 'lib/*/libgnustl_shared.so'
+    }
+}
+
+project.ext.gearvrfVersion = '4.0.1-SNAPSHOT'
+project.ext.jomlVersion = "1.9.3-SNAPSHOT"
+
+dependencies {
+    if(project.hasProperty("useLocalDependencies") && project.useLocalDependencies) {
+        debugImplementation(name: 'framework-debug', ext: 'aar')
+        releaseImplementation(name: 'framework-release', ext: 'aar')
+        debugImplementation(name: 'backend_daydream-debug', ext: 'aar')
+        releaseImplementation(name: 'backend_daydream-release', ext: 'aar')
+        debugImplementation(name: 'backend_oculus-debug', ext: 'aar')
+        releaseImplementation(name: 'backend_oculus-release', ext: 'aar')
+        debugImplementation(name: 'gvrf-physics-debug', ext: 'aar')
+        releaseImplementation(name: 'gvrf-physics-release', ext: 'aar')
+    } else {
+        implementation "org.gearvrf:backend_oculus:$gearvrfVersion"
+        implementation "org.gearvrf:framework:$gearvrfVersion"
+        implementation "org.gearvrf:gvrf-physics:$gearvrfVersion"
+    }
+
+    implementation 'org.joml:joml-android:1.9.3-SNAPSHOT'
+
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+}
